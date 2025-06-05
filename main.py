@@ -14,17 +14,26 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 PURPLE = (131, 10, 245)
 
+font_name = pygame.font.match_font('arial')
+def draw_text(surf,text,size,x,y,color):
+    font = pygame.font.Font(font_name,size)
+    text_surface = font.render(text,True,color)
+    text_rect = text_surface.get_rect()
+    text_rect.midtop =(x,y)
+    surf.blit(text_surface,text_rect)
+
 class Player1(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.width = 20
         self.height = 80
         self.image = pygame.Surface((self.width,self.height))
-        self.image.fill(WHITE)
+        self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 200
         self.speedy = 0
+        self.score1 = 0
 
     def update(self):
         self.speedy = 0
@@ -45,11 +54,12 @@ class Player2(pygame.sprite.Sprite):
         self.width = 20
         self.height = 80
         self.image = pygame.Surface((self.width,self.height))
-        self.image.fill(WHITE)
+        self.image.fill(BLUE)
         self.rect = self.image.get_rect()
         self.rect.x = WIDTH-self.width
         self.rect.y = 200
         self.speedy = 0
+        self.score2 = 0
 
     def update(self):
         self.speedy = 0
@@ -70,7 +80,7 @@ class Ball(pygame.sprite.Sprite):
         self.width = 20
         self.height = 20
         self.image = pygame.Surface((self.width,self.height))
-        self.image.fill(WHITE)
+        self.image.fill(BLACK)
         self.rect = self.image.get_rect()
         self.rect.x = WIDTH//2
         self.rect.y = HEIGHT//2
@@ -78,12 +88,12 @@ class Ball(pygame.sprite.Sprite):
         self.speedx = -4
 
     def update(self):
-        if self.rect.left <= 0:
-            self.speedx = -1*self.speedx
+        # if self.rect.left <= 0:
+        #     self.speedx = -1*self.speedx
         if self.rect.bottom >= HEIGHT:
             self.speedy = -1*self.speedy
-        if self.rect.right >= WIDTH:
-            self.speedx = -1*self.speedx
+        # if self.rect.right >= WIDTH:
+        #     self.speedx = -1*self.speedx
         if self.rect.top <= 0:
             self.speedy = -1*self.speedy
         self.rect.x += self.speedx
@@ -125,13 +135,27 @@ while running:
     hit_right_paddle = pygame.sprite.spritecollide(right_player, balls, False)
     if hit_right_paddle:
         gameball.speedx = -1 * gameball.speedx
-
+    if gameball.rect.right <=0:
+        right_player.score2 +=1
+        gameball.kill()
+        gameball = Ball()
+        all_sprites.add(gameball)
+        balls.add(gameball)
+    if gameball.rect.left >=WIDTH:
+        left_player.score1 +=1
+        gameball.kill()
+        gameball = Ball()
+        all_sprites.add(gameball)
+        balls.add(gameball)
     # Update
     all_sprites.update()
 
     # Draw / render
-    screen.fill(BLACK)
+    screen.fill(WHITE)
     all_sprites.draw(screen)
+    draw_text(screen,'Pong',32,WIDTH//2,10,'BLACK')
+    draw_text(screen, str(left_player.score1), 32, WIDTH // 4, 20, 'RED')
+    draw_text(screen, str(right_player.score2), 32, 3*WIDTH // 4, 20, 'BLUE')
     # *after* drawing everything, flip the display
     pygame.display.flip()
 
