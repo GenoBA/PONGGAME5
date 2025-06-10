@@ -1,8 +1,7 @@
-#Pygame template - skeleton for a new pygame project
 import pygame
 import random
 
-WIDTH = 480
+WIDTH = 620
 HEIGHT = 480
 FPS = 30
 
@@ -84,8 +83,14 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = WIDTH//2
         self.rect.y = HEIGHT//2
-        self.speedy = 1
-        self.speedx = -4
+        self.speedy = random.randint(3,8)
+        self.speedx = random.randint(3,8)
+        horiz = random.choice(["left", "right"])
+        if horiz == "left":
+            self.speedx = -1 * self.speedx
+        vert = random.choice(["up", "down"])
+        if vert == "up":
+            self.speedy = -1*self.speedy
 
     def update(self):
         # if self.rect.left <= 0:
@@ -118,6 +123,8 @@ all_sprites.add(right_player)
 gameball = Ball()
 all_sprites.add(gameball)
 balls.add(gameball)
+new_ball = False
+gameover = False
 # Game loop
 running = True
 while running:
@@ -131,32 +138,48 @@ while running:
     hit_left_paddle = pygame.sprite.spritecollide(left_player,balls,False)
     if hit_left_paddle:
         gameball.speedx = -1*gameball.speedx
+        gameball.speedx += 1
 
     hit_right_paddle = pygame.sprite.spritecollide(right_player, balls, False)
     if hit_right_paddle:
         gameball.speedx = -1 * gameball.speedx
+        gameball.speedx += -1
     if gameball.rect.right <=0:
         right_player.score2 +=1
         gameball.kill()
-        gameball = Ball()
-        all_sprites.add(gameball)
-        balls.add(gameball)
+        if right_player.score2>=11:
+            right_player.score2 = 11
+            gameover=True
+        else:
+            new_ball = True
+
     if gameball.rect.left >=WIDTH:
         left_player.score1 +=1
         gameball.kill()
+        if left_player.score1>=11:
+            left_player.score1 = 11
+            gameover=True
+        else:
+            new_ball = True
+    if new_ball == True:
         gameball = Ball()
         all_sprites.add(gameball)
         balls.add(gameball)
+        new_ball = False
     # Update
     all_sprites.update()
 
     # Draw / render
     screen.fill(WHITE)
     all_sprites.draw(screen)
-    draw_text(screen,'Pong',32,WIDTH//2,10,'BLACK')
+    draw_text(screen,'Pong',32,WIDTH//2,10,'Black')
     draw_text(screen, str(left_player.score1), 32, WIDTH // 4, 20, 'RED')
     draw_text(screen, str(right_player.score2), 32, 3*WIDTH // 4, 20, 'BLUE')
-    # *after* drawing everything, flip the display
+    if gameover == True:
+        if left_player.score1>=11:
+            draw_text(screen,"Left Player Wins!!!",32,WIDTH//2,HEIGHT//2,RED)
+        else:
+            draw_text(screen,"Right Player Wins!!!",32,WIDTH//2,HEIGHT//2,BLUE)
     pygame.display.flip()
 
 pygame.quit()
