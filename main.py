@@ -26,8 +26,10 @@ class Player1(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.width = 20
         self.height = 80
-        self.image = pygame.Surface((self.width,self.height))
-        self.image.fill(RED)
+        # self.image = pygame.Surface((self.width,self.height))
+        # self.image.fill(RED)
+        self.image = pygame.image.load("leftpaddle.png")
+        self.image = pygame.transform.scale(self.image,(self.width,self.height))
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 200
@@ -52,8 +54,10 @@ class Player2(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.width = 20
         self.height = 80
-        self.image = pygame.Surface((self.width,self.height))
-        self.image.fill(BLUE)
+        # self.image = pygame.Surface((self.width,self.height))
+        # self.image.fill(BLUE)
+        self.image = pygame.image.load("rightpaddle.png")
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.rect = self.image.get_rect()
         self.rect.x = WIDTH-self.width
         self.rect.y = 200
@@ -78,8 +82,10 @@ class Ball(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.width = 20
         self.height = 20
-        self.image = pygame.Surface((self.width,self.height))
-        self.image.fill(BLACK)
+        # self.image = pygame.Surface((self.width,self.height))
+        # self.image.fill(BLACK)
+        self.image = pygame.image.load("ball.png")
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.rect = self.image.get_rect()
         self.rect.x = WIDTH//2
         self.rect.y = HEIGHT//2
